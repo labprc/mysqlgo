@@ -28,11 +28,22 @@ INSERT INTO Loan (Name, Loan_Amount) VALUES
 CREATE VIEW Customer_View AS
 SELECT Name, City, Balance FROM Customer;
 
+CREATE VIEW High_Balance_View AS
+SELECT Name, Balance FROM Customer WHERE Balance > 20000;
+
+CREATE VIEW Nasik_HighBal_View AS
+SELECT Name, Balance FROM Customer 
+WHERE City='Nasik' AND Balance > 20000;
+
 CREATE INDEX idx_customer_name ON Customer(Name);
+
+CREATE INDEX idx_customer_account_name ON Customer(Account_no, Name);
 
 SELECT * FROM Customer;
 SELECT * FROM Loan;
 SELECT * FROM Customer_View;
+SELECT * FROM High_Balance_View;
+SELECT * FROM Nasik_HighBal_View;
 
 SELECT * FROM Customer WHERE City='Pune';
 SELECT * FROM Customer WHERE Balance>20000;
@@ -46,7 +57,9 @@ SELECT * FROM Customer;
 SELECT COUNT(*) AS Total_Customers FROM Customer;
 SELECT MAX(Balance) AS Highest_Balance FROM Customer;
 SELECT UPPER(Name) AS Customer_Name FROM Customer;
-SELECT * FROM Customer ORDER BY Name;
+SELECT * FROM Customer ORDER BY Balance ASC;
+
+SELECT * FROM Loan ORDER BY Loan_Amount DESC;
 
 SELECT DISTINCT Name FROM Customer
 UNION
@@ -63,6 +76,13 @@ SELECT DISTINCT c.Name
 FROM Customer c
 LEFT JOIN Loan l ON c.Name = l.Name
 WHERE l.Name IS NULL;
+
+CREATE VIEW Loan_Interest_20Y AS
+SELECT Name, Loan_Amount, Loan_Amount * 0.08 * 20 AS Interest_20_Years
+FROM Loan;
+
+SELECT * FROM Loan_Interest_20Y;
+
 
 
 
