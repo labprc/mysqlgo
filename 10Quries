@@ -1,3 +1,4 @@
+DROP DATABASE IF EXISTS BankDB;
 CREATE DATABASE BankDB;
 USE BankDB;
 
@@ -8,16 +9,16 @@ CREATE TABLE Customer (
     City VARCHAR(50) DEFAULT 'Nashik'
 );
 
-INSERT INTO Customer (Name, Balance, City) VALUES
-('Ram', 10000, 'Pune'),
-('Ravi', 25000, 'Nasik'),
-('Sachin', 30000, 'Mumbai');
-
 CREATE TABLE Loan (
     Loan_no INT AUTO_INCREMENT PRIMARY KEY,
     Name VARCHAR(50),
     Loan_Amount INT CHECK (Loan_Amount > 0)
 );
+
+INSERT INTO Customer (Name, Balance, City) VALUES
+('Ram', 10000, 'Pune'),
+('Ravi', 25000, 'Nasik'),
+('Sachin', 30000, 'Mumbai');
 
 INSERT INTO Loan (Name, Loan_Amount) VALUES
 ('Ram', 10000),
@@ -31,25 +32,27 @@ CREATE INDEX idx_customer_name ON Customer(Name);
 
 SELECT * FROM Customer;
 SELECT * FROM Loan;
+SELECT * FROM Customer WHERE City = 'Pune';
+SELECT * FROM Customer WHERE Balance > 20000;
 
 UPDATE Customer SET Balance = Balance + 5000 WHERE Name = 'Ram';
+DELETE FROM Customer WHERE Name = 'Sachin';
 
-SELECT * FROM Customer WHERE Balance > 20000;
-SELECT * FROM Customer WHERE City = 'Pune';
 SELECT COUNT(*) AS Total_Customers FROM Customer;
 SELECT MAX(Balance) AS Highest_Balance FROM Customer;
-SELECT UPPER(Name) FROM Customer;
+SELECT UPPER(Name) AS Customer_Name FROM Customer;
 SELECT * FROM Customer ORDER BY Name;
 
-SELECT Name FROM Customer
+SELECT DISTINCT Name FROM Customer
 UNION
-SELECT Name FROM Loan;
+SELECT DISTINCT Name FROM Loan;
 
-SELECT c.Name
+SELECT DISTINCT c.Name
 FROM Customer c
 INNER JOIN Loan l ON c.Name = l.Name;
 
-SELECT c.Name
+SELECT DISTINCT c.Name
 FROM Customer c
 LEFT JOIN Loan l ON c.Name = l.Name
 WHERE l.Name IS NULL;
+
