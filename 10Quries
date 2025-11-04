@@ -51,8 +51,13 @@ SELECT DISTINCT c.Name
 FROM Customer c
 INNER JOIN Loan l ON c.Name = l.Name;
 
+-- Re-insert Sachin here
+INSERT INTO Customer (Name, Balance, City)
+VALUES ('Sachin', 30000, 'Mumbai');
+
 SELECT DISTINCT c.Name
 FROM Customer c
 LEFT JOIN Loan l ON c.Name = l.Name
 WHERE l.Name IS NULL;
+
 
