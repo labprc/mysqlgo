@@ -32,11 +32,11 @@ CREATE INDEX idx_customer_name ON Customer(Name);
 
 SELECT * FROM Customer;
 SELECT * FROM Loan;
-SELECT * FROM Customer WHERE City = 'Pune';
-SELECT * FROM Customer WHERE Balance > 20000;
+SELECT * FROM Customer WHERE City='Pune';
+SELECT * FROM Customer WHERE Balance>20000;
 
-UPDATE Customer SET Balance = Balance + 5000 WHERE Name = 'Ram';
-DELETE FROM Customer WHERE Name = 'Sachin';
+UPDATE Customer SET Balance = Balance + 5000 WHERE Name='Ram';
+DELETE FROM Customer WHERE Name='Sachin';
 
 SELECT COUNT(*) AS Total_Customers FROM Customer;
 SELECT MAX(Balance) AS Highest_Balance FROM Customer;
@@ -51,7 +51,6 @@ SELECT DISTINCT c.Name
 FROM Customer c
 INNER JOIN Loan l ON c.Name = l.Name;
 
--- Re-insert Sachin here
 INSERT INTO Customer (Name, Balance, City)
 VALUES ('Sachin', 30000, 'Mumbai');
 
@@ -59,5 +58,6 @@ SELECT DISTINCT c.Name
 FROM Customer c
 LEFT JOIN Loan l ON c.Name = l.Name
 WHERE l.Name IS NULL;
+
 
 
