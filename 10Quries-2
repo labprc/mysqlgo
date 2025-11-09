@@ -1,0 +1,73 @@
+DROP TABLE IF EXISTS Student_Mark;
+DROP TABLE IF EXISTS Student_Info;
+
+CREATE TABLE Student_Mark(
+    Rollno INT PRIMARY KEY,
+    Name VARCHAR(30),
+    Marks INT,
+    Branch VARCHAR(30)
+);
+
+INSERT INTO Student_Mark VALUES(1,'Ravi',90,'Computer');
+INSERT INTO Student_Mark VALUES(2,'Vedika',70,'Computer');
+INSERT INTO Student_Mark VALUES(3,'Aarush',95,'IT');
+INSERT INTO Student_Mark VALUES(4,'Jyoti',60,'IT');
+SELECT * FROM Student_Mark;
+
+SELECT * FROM Student_Mark WHERE Marks>70;
+SELECT * FROM Student_Mark WHERE Marks<70;
+SELECT * FROM Student_Mark WHERE Marks=70 AND Name='Vedika';
+
+UPDATE Student_Mark SET Name='Sachin' WHERE Name='Ravi';
+SELECT * FROM Student_Mark;
+
+DELETE FROM Student_Mark WHERE Name='Aarush';
+SELECT * FROM Student_Mark;
+
+SELECT Name, Marks FROM Student_Mark WHERE Marks=(SELECT MAX(Marks) FROM Student_Mark);
+
+SELECT Branch, MIN(Marks) AS Minimum, MAX(Marks) AS Maximum, 
+AVG(Marks) AS Average, SUM(Marks) AS Total, COUNT(*) AS Count 
+FROM Student_Mark GROUP BY Branch;
+
+CREATE TABLE Student_Info(
+    Rollno INT PRIMARY KEY,
+    Name VARCHAR(30),
+    Address VARCHAR(30)
+);
+
+INSERT INTO Student_Info VALUES(1,'Ravi','Nashik');
+INSERT INTO Student_Info VALUES(2,'Vedika','Nashik');
+INSERT INTO Student_Info VALUES(5,'Tushar','Pune');
+INSERT INTO Student_Info VALUES(6,'Varsha','Mumbai');
+SELECT * FROM Student_Info;
+
+SELECT sm.Rollno, sm.Name, sm.Marks, si.Address 
+FROM Student_Mark sm 
+INNER JOIN Student_Info si 
+ON sm.Rollno = si.Rollno;
+
+SELECT sm.Rollno, sm.Name, sm.Marks, si.Address 
+FROM Student_Mark sm 
+RIGHT JOIN Student_Info si 
+ON sm.Rollno = si.Rollno;
+
+SELECT sm.Rollno, sm.Name, sm.Marks, si.Address 
+FROM Student_Mark sm 
+LEFT JOIN Student_Info si 
+ON sm.Rollno = si.Rollno;
+
+SELECT sm.Rollno, sm.Name, sm.Marks, si.Address 
+FROM Student_Mark sm 
+LEFT JOIN Student_Info si 
+ON sm.Rollno = si.Rollno
+UNION
+SELECT si.Rollno, si.Name, sm.Marks, si.Address 
+FROM Student_Mark sm 
+RIGHT JOIN Student_Info si 
+ON sm.Rollno = si.Rollno;
+
+CREATE VIEW HighScorer AS
+SELECT * FROM Student_Mark WHERE Marks>80;
+SELECT * FROM HighScorer;
+
