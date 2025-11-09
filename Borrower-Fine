@@ -1,0 +1,72 @@
+DROP TABLE IF EXISTS Borrower;
+DROP TABLE IF EXISTS Fine;
+
+CREATE TABLE Borrower(
+    Roll_no INT PRIMARY KEY,
+    Name VARCHAR(30),
+    DOI DATE,
+    NameOfBook VARCHAR(30),
+    Status CHAR(1)
+);
+
+CREATE TABLE Fine(
+    Roll_no INT,
+    sDate DATETIME,
+    Amt INT
+);
+
+INSERT INTO Borrower VALUES
+(1,'Ravi','2024-09-01','DBMS','I'),
+(2,'Vedant','2024-09-20','CNS','I'),
+(3,'Aarush','2024-10-25','AI','I'),
+(4,'Jyoti','2024-10-15','DSA','I');
+
+SELECT * FROM Borrower;
+
+DROP PROCEDURE IF EXISTS p_fine;
+DELIMITER //
+
+CREATE PROCEDURE p_fine(IN rno INT, IN bname VARCHAR(30))
+BEGIN
+    DECLARE d1 DATE;
+    DECLARE daycnt INT;
+    DECLARE fine_amt INT;
+    DECLARE v_not_found CONDITION FOR SQLSTATE '02000';
+
+    DECLARE EXIT HANDLER FOR v_not_found
+    BEGIN
+        SELECT 'Record not found for given Roll_no or Book name.' AS Error_Message;
+    END;
+
+    SELECT DOI INTO d1 FROM Borrower WHERE Roll_no = rno AND NameOfBook = bname;
+
+    SELECT DATEDIFF(NOW(), d1) INTO daycnt;
+
+    IF (daycnt >= 15 AND daycnt <= 30) THEN
+        SET fine_amt = daycnt * 5;
+        INSERT INTO Fine(Roll_no, sDate, Amt) VALUES (rno, NOW(), fine_amt);
+        UPDATE Borrower SET Status = 'R' WHERE Roll_no = rno;
+
+    ELSEIF (daycnt > 30) THEN
+        SET fine_amt = daycnt * 50;
+        INSERT INTO Fine(Roll_no, sDate, Amt) VALUES (rno, NOW(), fine_amt);
+        UPDATE Borrower SET Status = 'R' WHERE Roll_no = rno;
+
+    ELSE
+        UPDATE Borrower SET Status = 'R' WHERE Roll_no = rno;
+    END IF;
+
+END;
+//
+DELIMITER ;
+
+SELECT * FROM Borrower;
+
+CALL p_fine(1,'DBMS');
+CALL p_fine(2,'CNS');
+CALL p_fine(3,'AI');
+CALL p_fine(4,'DSA');
+CALL p_fine(10,'NoBook');
+
+SELECT * FROM Borrower;
+SELECT * FROM Fine;
