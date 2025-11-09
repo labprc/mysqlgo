@@ -1,0 +1,67 @@
+DROP TABLE IF EXISTS Stud_Marks;
+DROP TABLE IF EXISTS Result;
+
+CREATE TABLE Stud_Marks(
+    Rollno INT PRIMARY KEY,
+    Name VARCHAR(30),
+    Total_Marks INT
+);
+
+CREATE TABLE Result(
+    Rollno INT,
+    Name VARCHAR(30),
+    Class VARCHAR(30)
+);
+
+INSERT INTO Stud_Marks VALUES
+(1,'Ravi',1450),
+(2,'Vedant',970),
+(3,'Aarush',880),
+(4,'Jyoti',810),
+(5,'Tushar',1300);
+
+DROP PROCEDURE IF EXISTS proc_Grade;
+DELIMITER //
+
+CREATE PROCEDURE proc_Grade()
+BEGIN
+    DECLARE done INT DEFAULT 0;
+    DECLARE s_marks INT;
+    DECLARE s_rollno INT;
+    DECLARE s_name VARCHAR(30);
+    DECLARE s_class VARCHAR(30);
+
+    DECLARE s_student CURSOR FOR SELECT Rollno, Name, Total_Marks FROM Stud_Marks;
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+
+    OPEN s_student;
+
+    read_loop: LOOP
+        FETCH s_student INTO s_rollno, s_name, s_marks;
+        IF done = 1 THEN
+            LEAVE read_loop;
+        END IF;
+
+        IF (s_marks <= 1500 AND s_marks >= 990) THEN
+            SET s_class = 'Distinction';
+        ELSEIF (s_marks <= 989 AND s_marks >= 900) THEN
+            SET s_class = 'First Class';
+        ELSEIF (s_marks <= 899 AND s_marks >= 825) THEN
+            SET s_class = 'Higher Second Class';
+        ELSE
+            SET s_class = 'Pass';
+        END IF;
+
+        INSERT INTO Result(Rollno, Name, Class)
+        VALUES (s_rollno, s_name, s_class);
+    END LOOP;
+
+    CLOSE s_student;
+END;
+//
+DELIMITER ;
+
+CALL proc_Grade();
+
+SELECT * FROM Stud_Marks;
+SELECT * FROM Result;
