@@ -1,0 +1,27 @@
+use TEB_18
+db.createCollection("student")
+db.student.insertMany([
+  { RollNo: 1, Name: "Ram", Branch: "Computer", Marks: 95 },
+  { RollNo: 2, Name: "Ravi", Branch: "Computer", Marks: 90 },
+  { RollNo: 3, Name: "Jayesh", Branch: "Computer", Marks: 97 },
+  { RollNo: 4, Name: "Rohan", Branch: "Computer", Marks: 70 },
+  { RollNo: 5, Name: "Pande", Branch: "Computer", Marks: 85 },
+  { RollNo: 6, Name: "Pranav", Branch: "IT", Marks: 54 },
+  { RollNo: 7, Name: "Devang", Branch: "IT", Marks: 60 }
+])
+
+var mapFunction = function() {
+    emit(this.Branch, this.Marks);
+};
+
+var reduceFunction = function(key, values) {
+    return Array.sum(values);
+};
+
+db.student.mapReduce(
+    mapFunction,
+    reduceFunction,
+    { out: "TotalMarksByBranch" }
+)
+
+db.TotalMarksByBranch.find().pretty()
