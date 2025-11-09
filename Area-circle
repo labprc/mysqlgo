@@ -1,0 +1,43 @@
+DROP TABLE IF EXISTS areas;
+
+CREATE TABLE areas(
+    radius INT,
+    diameter FLOAT,
+    area FLOAT,
+    circumference FLOAT
+);
+
+DROP PROCEDURE IF EXISTS circle;
+DELIMITER //
+
+CREATE PROCEDURE circle()
+BEGIN
+   DECLARE radius INT;
+   DECLARE diameter FLOAT;
+   DECLARE area FLOAT;
+   DECLARE circumference FLOAT;
+   DECLARE pi FLOAT DEFAULT 3.14;
+
+   SET radius = 5;
+
+   cloop: LOOP
+      SET diameter = 2 * radius;
+      SET area = pi * radius * radius;
+      SET circumference = 2 * pi * radius;
+
+      INSERT INTO areas(radius, diameter, area, circumference)
+      VALUES (radius, diameter, area, circumference);
+
+      SET radius = radius + 1;
+
+      IF radius > 9 THEN
+         LEAVE cloop;
+      END IF;
+   END LOOP cloop;
+END;
+//
+DELIMITER ;
+
+CALL circle();
+
+SELECT * FROM areas;
