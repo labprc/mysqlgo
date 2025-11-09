@@ -1,0 +1,64 @@
+DROP TABLE IF EXISTS O_RollCall;
+DROP TABLE IF EXISTS N_RollCall;
+
+CREATE TABLE O_RollCall(
+    Rollno INT PRIMARY KEY,
+    Name VARCHAR(30)
+);
+
+CREATE TABLE N_RollCall(
+    Rollno INT,
+    Name VARCHAR(30)
+);
+
+INSERT INTO O_RollCall VALUES
+(1,'Ravi'),
+(2,'Vedant'),
+(3,'Aarush');
+
+INSERT INTO N_RollCall VALUES
+(2,'Vedant'),
+(3,'Aarush'),
+(4,'Jyoti'),
+(5,'Tushar');
+
+SELECT * FROM O_RollCall;
+SELECT * FROM N_RollCall;
+
+DROP PROCEDURE IF EXISTS merge_rolls;
+DELIMITER //
+
+CREATE PROCEDURE merge_rolls(IN start_roll INT)
+BEGIN
+    DECLARE done INT DEFAULT 0;
+    DECLARE c_rollno INT;
+    DECLARE c_name VARCHAR(30);
+
+    DECLARE cur_merge CURSOR FOR
+        SELECT Rollno, Name FROM N_RollCall WHERE Rollno >= start_roll;
+
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+
+    OPEN cur_merge;
+
+    read_loop: LOOP
+        FETCH cur_merge INTO c_rollno, c_name;
+
+        IF done = 1 THEN
+            LEAVE read_loop;
+        END IF;
+
+        IF NOT EXISTS (SELECT 1 FROM O_RollCall WHERE Rollno = c_rollno) THEN
+            INSERT INTO O_RollCall(Rollno, Name) VALUES(c_rollno, c_name);
+        END IF;
+    END LOOP;
+
+    CLOSE cur_merge;
+END;
+//
+DELIMITER ;
+
+CALL merge_rolls(1);
+
+SELECT * FROM O_RollCall;
+
