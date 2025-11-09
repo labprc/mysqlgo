@@ -1,0 +1,34 @@
+db.createCollection("Student")
+db.Student.insertMany([
+  { RollNo: 1, Name: "Ram", City: "Nashik" },
+  { RollNo: 2, Name: "Ravi", City: "Pune" },
+  { RollNo: 3, Name: "Sahil", City: "Mumbai" }
+])
+db.Student.find().pretty()
+db.Student.insertOne({ RollNo: 4, Name: "Vedika", City: "Nashik", Pincode: 422005 })
+db.createCollection("Subjects")
+db.Subjects.insertMany([
+  { id: 11, Name: "DBMS", Dept: "Computer" },
+  { id: 12, Name: "OOP", Dept: "Computer" }
+])
+db.Subjects.find().pretty()
+db.Subjects.drop()
+db.createCollection("Subjects")
+db.Subjects.insertMany([
+  { id: 11, Name: "DBMS", Dept: "Computer" },
+  { id: 12, Name: "OOP", Dept: "Computer" }
+])
+db.Subjects.updateMany(
+  { Dept: "Computer" },
+  { $set: { Branch: "Computer" } }
+)
+db.Subjects.find().pretty()
+db.Student.updateOne(
+  { RollNo: 5 },
+  { $set: { Name: "Akash", City: "Mumbai", Marks: 75 } },
+  { upsert: true }
+)
+db.Student.find({ Marks: { $gte: 60, $lte: 90 } }).pretty()
+db.Student.find({ City: { $ne: "Pune" } }).pretty()
+db.Student.find({ $or: [ { Name: "Ravi" }, { Marks: { $gt: 80 } } ] }).pretty()
+db.Student.find({ Name: /^V/ }).pretty()
